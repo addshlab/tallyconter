@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tally counter</title>
+    <style>
+        body {
+            background-color: #000000;
+            color: #FFFFFF;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            flex-direction: column;
+            font-family: Arial, sans-serif;
+        }
+        #counter {
+            font-size: 4em;
+            margin: 20px;
+        }
+        button {
+            font-size: 1.2em;
+            padding: 5px 15px;
+            margin: 5px;
+            cursor: pointer;
+        }
+        .background-buttons {
+            display: flex;
+            gap: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div id="counter">000000</div>
+    <button onclick="countUp()">カウントアップ</button>
+    <button onclick="countDown()">カウントダウン</button>
+    <button onclick="resetCount()">リセット</button>
+    <div class="background-buttons">
+        <button onclick="setBackgroundColor('#000000')">黒背景</button>
+        <button onclick="setBackgroundColor('#FFFFFF')">白背景</button>
+        <button onclick="setBackgroundColor('#00FF00')">緑背景</button>
+    </div>
+
+    <script>
+        const storageKey = 'app';
+        let count = 0;
+
+        // 初期化処理
+        window.onload = function() {
+            const savedData = localStorage.getItem(storageKey);
+            if (savedData) {
+                const parsedData = JSON.parse(savedData);
+                count = parsedData.data.count;
+                updateCounterDisplay();
+            }
+        };
+
+        // カウンターの表示を更新
+        function updateCounterDisplay() {
+            const counterElement = document.getElementById('counter');
+            counterElement.textContent = count.toString().padStart(6, '0');
+        }
+
+        // カウントアップ関数
+        function countUp() {
+            count++;
+            saveCount();
+            updateCounterDisplay();
+        }
+
+        // カウントダウン関数
+        function countDown() {
+            if (count > 0) {
+                count--;
+                saveCount();
+                updateCounterDisplay();
+            }
+        }
+
+        // リセット関数
+        function resetCount() {
+            count = 0;
+            saveCount();
+            updateCounterDisplay();
+        }
+
+        // カウントの状態をLocalStorageに保存
+        function saveCount() {
+            const data = {
+                data: {
+                    count: count
+                }
+            };
+            localStorage.setItem(storageKey, JSON.stringify(data));
+        }
+
+        // 背景色の設定
+        function setBackgroundColor(color) {
+            document.body.style.backgroundColor = color;
+            document.body.style.color = color === '#000000' ? '#FFFFFF' : '#000000';
+        }
+    </script>
+</body>
+</html>
